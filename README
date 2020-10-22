@@ -1,0 +1,33 @@
+# Gentoo BLAS/LAPACK chain loading
+
+**This is highly experimental.**
+
+## Overview
+
+Netlib specifications do not mandate the presence of BLAS/LAPACK/etc symbols to be present
+in the same library. In fact, they do not even require the libraries to be named
+`libblas.so, libcblas.so` or otherwise
+
+This mechanism strictly follows those recommendations and allows creation of dummy
+empty libraries, which chain load the libraries with actual symbols, resulting in a
+very simple technique to link any library (or set of libaries) as a provider.
+
+## Advantages
+
+- Very simple eclass to register a provider
+- No fiddling around with sources to find exact speficications
+
+## Disadvantages
+
+- Breaks false promises of `dlopen` on these libraries.
+
+## Testings
+
+So far, testing has been done with numpy and scipy, both heavy users of these libraries
+and they have been working perfectly.
+
+## Future work
+
+- Can we do a function redirection to the appropriate libraries, without a dlopen ?
+  [Flexiblas](https://github.com/mpimd-csc/flexiblas/) does something similar but
+  that is overkill for our simple problem.
