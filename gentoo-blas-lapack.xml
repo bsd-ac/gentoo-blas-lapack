@@ -1,0 +1,14 @@
+<repositories encoding="unicode" version="1.1">
+  <repo priority="50" quality="experimental">
+    <name>gentoo-blas-lapack</name>
+    <description>gentoo overlay for chain loading BLAS/LAPACK at runtimr</description>
+    <homepage>https://github.com/bsd-ac/gentoo-blas-lapack</homepage>
+    <irc>webchat.freenode.net/?channels=gentoo-science</irc>
+    <owner>
+      <email>floss@bsd.ac</email>
+      <name>epsilonKNOT</name>
+      <name>Aisha Tammy</name>
+    </owner>
+    <source type="git">https://github.com/bsd-ac/gentoo-blas-lapack</source>
+  </repo>
+</repositories>
