@@ -21,6 +21,10 @@ very simple technique to link any library (or set of libaries) as a provider.
 
 - Breaks false promises of `dlopen` on these libraries.
 
+This is actually not something that we are breaking specifically at this point.   
+This problem already happens if we use Intel MKL-RT as the *provider* library,
+as doing a `dlopen` on that already causes symbol resolution errors.
+
 ## Testings
 
 So far, testing has been done with numpy and scipy, both heavy users of these libraries
@@ -31,3 +35,4 @@ and they have been working perfectly.
 - Can we do a function redirection to the appropriate libraries, without a dlopen ?
   [Flexiblas](https://github.com/mpimd-csc/flexiblas/) does something similar but
   that is overkill for our simple problem.
+  Does there exist some linker magic
