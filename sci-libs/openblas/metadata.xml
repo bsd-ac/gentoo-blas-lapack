@@ -21,12 +21,9 @@
     bug fixes beyond GotoBLAS.
   </longdescription>
   <use>
-    <flag name="dynamic">
-      Build dynamic architecture detection at run time (for multi targets)
-    </flag>
-    <flag name="pthread">
-      Build with pthread threading model
-    </flag>
+    <flag name="dynamic">Build dynamic architecture detection at run time (for multi targets)</flag>
+    <flag name="pthread">Build with pthread threading model, instead of the preferred openmp</flag>
+    <flag name="relapack">Build the ReLAPACK library extension API</flag>
   </use>
   <upstream>
     <remote-id type="github">xianyi/OpenBLAS</remote-id>
