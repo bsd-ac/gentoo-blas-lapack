@@ -196,11 +196,14 @@ do_priority() {
 		old_priority=$(load_config "${EROOT}/etc/env.d/eselect-library/${libname}/${libdir}/config" PRIORITY)
 		store_config ${EROOT}/etc/env.d/eselect-library/${libname}/${libdir}/config PRIORITY "${priority}"
 		# delete old file
-		mv "${EROOT}/etc/ld.so.conf.d/${old_priority}-library-${libname}-${libdir}.conf" \
-		   "${EROOT}/etc/ld.so.conf.d/${priority}-library-${libname}-${libdir}.conf"
-		# refresh cache. env-update will call ldconfig (see
-		# portage::env_update.py) so we don't need to call it explicitly.
-		env-update
+		current_provider=$(load_config "${EROOT}/etc/env.d/eselect-library/${libname}/${libdir}/config" CURRENT)
+		if [[ ! -z ${current_provider} ]]; then
+			mv "${EROOT}/etc/ld.so.conf.d/${old_priority}-library-${libname}-${libdir}.conf" \
+			   "${EROOT}/etc/ld.so.conf.d/${priority}-library-${libname}-${libdir}.conf"
+			# refresh cache. env-update will call ldconfig (see
+			# portage::env_update.py) so we don't need to call it explicitly.
+			env-update
+		fi
 	fi
 }
 
