@@ -4,9 +4,7 @@
 EAPI=7
 
 #CMAKE_MAKEFILE_GENERATOR="emake"
-PROVIDER_NAME=reference
-PROVIDER_LIBS="blas lapack"
-inherit library-provider cmake
+inherit cmake
 
 DESCRIPTION="BLAS,CBLAS,LAPACK,LAPACKE reference implementations"
 HOMEPAGE="http://www.netlib.org/lapack/"
@@ -42,22 +40,4 @@ src_configure() {
 	)
 
 	cmake_src_configure
-}
-
-src_install() {
-	cmake_src_install
-
-	# Create private lib directory for eselect-library blas (ld.so.conf)
-	dodir /usr/$(get_libdir)/blas/reference
-	dosym ../../libblas.so usr/$(get_libdir)/blas/reference/libblas.so
-	dosym ../../libblas.so.3 usr/$(get_libdir)/blas/reference/libblas.so.3
-	dosym ../../libcblas.so usr/$(get_libdir)/blas/reference/libcblas.so
-	dosym ../../libcblas.so.3 usr/$(get_libdir)/blas/reference/libcblas.so.3
-
-	# Create private lib directory for eselect-library lapack (ld.so.conf)
-	dodir /usr/$(get_libdir)/lapack/reference
-	dosym ../../liblapack.so usr/$(get_libdir)/lapack/reference/liblapack.so
-	dosym ../../liblapack.so.3 usr/$(get_libdir)/lapack/reference/liblapack.so.3
-	dosym ../../liblapacke.so usr/$(get_libdir)/lapack/reference/liblapacke.so
-	dosym ../../liblapacke.so.3 usr/$(get_libdir)/lapack/reference/liblapacke.so.3
 }
