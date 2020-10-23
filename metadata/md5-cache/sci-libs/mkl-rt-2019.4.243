@@ -1,0 +1,11 @@
+DEFINED_PHASES=install postinst postrm
+DESCRIPTION=Intel Math Kernel Library (Runtime)
+EAPI=7
+HOMEPAGE=https://software.intel.com/en-us/mkl
+KEYWORDS=~amd64
+LICENSE=ISSL
+RDEPEND=>=app-eselect/eselect-blas-0.2 sys-libs/libomp
+SLOT=0
+SRC_URI=https://repo.continuum.io/pkgs/main/linux-64/mkl-2019.4-243.tar.bz2 -> mkl-rt-2019.4.243.tar.bz2
+_eclasses_=blas-lapack-provider	c8299270b0b63ce76fcec54bd3b7ff6f
+_md5_=6cbd845c414838d5e9e5c35782ac3e87

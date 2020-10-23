@@ -1,0 +1,14 @@
+DEFINED_PHASES=compile configure install postinst postrm pretend setup test
+DEPEND=!64bit-index? ( >=app-eselect/eselect-blas-0.2 ) || ( dev-lang/python:3.9 dev-lang/python:3.8 dev-lang/python:3.7 dev-lang/python:3.6 ) virtual/fortran
+DESCRIPTION=BLAS-like Library Instantiation Software Framework
+EAPI=7
+HOMEPAGE=https://github.com/flame/blis
+IUSE=openmp pthread static-libs doc 64bit-index
+KEYWORDS=~amd64 ~ppc64 ~x86
+LICENSE=BSD
+RDEPEND=!64bit-index? ( >=app-eselect/eselect-blas-0.2 ) virtual/fortran
+REQUIRED_USE=?? ( openmp pthread )
+SLOT=0
+SRC_URI=https://github.com/flame/blis/archive/0.7.0.tar.gz -> blis-0.7.0.tar.gz
+_eclasses_=blas-lapack-provider	c8299270b0b63ce76fcec54bd3b7ff6f	fortran-2	b4796813ccda91c9c0d3463fc90aa969	multilib	98584e405e2b0264d37e8f728327fed1	python-any-r1	54a3178500786b0a7ede4a23b7f2a6ad	python-utils-r1	e41e32d357e5bdd388b5be2ce24f3883	toolchain-funcs	605c126bed8d87e4378d5ff1645330cb
+_md5_=4a748db3f3e4cd34a7bb65ca88fd6c99

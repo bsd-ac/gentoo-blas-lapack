@@ -1,0 +1,15 @@
+BDEPEND=dev-vcs/git
+DEFINED_PHASES=compile configure install postinst postrm prepare setup test
+DEPEND=virtual/blas virtual/cblas virtual/fortran
+DESCRIPTION=AMD optimized high-performance object-based library for DLA computations
+EAPI=7
+HOMEPAGE=https://developer.amd.com/amd-aocl/
+IUSE=scc supermatrix static-libs test cpu_flags_x86_sse3
+KEYWORDS=~amd64
+LICENSE=BSD
+RDEPEND=!sci-libs/libflame virtual/fortran
+RESTRICT=!test? ( test )
+SLOT=0
+SRC_URI=https://github.com/amd/libflame/archive/2.2.tar.gz -> libflame-amd-2.2.tar.gz
+_eclasses_=blas-lapack-provider	c8299270b0b63ce76fcec54bd3b7ff6f	fortran-2	b4796813ccda91c9c0d3463fc90aa969	multilib	98584e405e2b0264d37e8f728327fed1	toolchain-funcs	605c126bed8d87e4378d5ff1645330cb
+_md5_=18d8b922ceebb122192b456ba75bceef

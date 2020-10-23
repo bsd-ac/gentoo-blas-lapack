@@ -1,0 +1,14 @@
+BDEPEND=dev-vcs/git >=dev-vcs/git-1.8.2.1[curl]
+DEFINED_PHASES=compile configure install postinst postrm prepare setup test unpack
+DEPEND=virtual/blas virtual/cblas virtual/fortran
+DESCRIPTION=AMD optimized high-performance object-based library for DLA computations
+EAPI=7
+HOMEPAGE=https://developer.amd.com/amd-aocl/
+IUSE=scc supermatrix static-libs test cpu_flags_x86_sse3
+LICENSE=BSD
+PROPERTIES=live
+RDEPEND=!sci-libs/libflame virtual/fortran
+RESTRICT=!test? ( test )
+SLOT=0
+_eclasses_=blas-lapack-provider	c8299270b0b63ce76fcec54bd3b7ff6f	fortran-2	b4796813ccda91c9c0d3463fc90aa969	git-r3	3e7ec3d6619213460c85e2aa48398441	multilib	98584e405e2b0264d37e8f728327fed1	toolchain-funcs	605c126bed8d87e4378d5ff1645330cb
+_md5_=18d8b922ceebb122192b456ba75bceef
