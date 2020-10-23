@@ -3,9 +3,9 @@
 
 EAPI=7
 
-PROVIDER_NAME=libflame-amd
-PROVIDER_LAPACK=1
-inherit blas-lapack-provider fortran-2 toolchain-funcs
+PROVIDER_NAME="aocl-libflame"
+PROVIDER_LIBS="lapack"
+inherit chainload-provider fortran-2 toolchain-funcs
 FORTRAN_NEED_OPENMP=1
 
 DESCRIPTION="AMD optimized high-performance object-based library for DLA computations"
@@ -72,7 +72,7 @@ src_configure() {
 
 src_compile() {
 	default
-	provider-link_lapack "-Llib/${CHOST} -lflame"
+	provider-link-c "liblapack.so.3" "-Llib/${CHOST} -lflame"
 
 	use test && emake -Ctest
 }
@@ -86,5 +86,5 @@ src_install() {
 	emake -j1 DESTDIR="${D}" install
 	dodir /usr/include/flame
 	mv "${ED}"/usr/include/{{lapacke,lapacke_mangling,lapack}.h,flame} || die
-	provider-install_libs
+	provider-install-lib "liblapack.so.3"
 }

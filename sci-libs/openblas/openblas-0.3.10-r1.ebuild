@@ -4,10 +4,11 @@
 EAPI=7
 
 PROVIDER_NAME=openblas
+PROVIDER_LIBS="blas lapack"
 PROVIDER_BLAS=1
 PROVIDER_LAPACK=1
 PROVIDER_LAPACKE=1
-inherit blas-lapack-provider flag-o-matic fortran-2 toolchain-funcs
+inherit chainload-provider flag-o-matic fortran-2 toolchain-funcs
 
 DESCRIPTION="Optimized BLAS library based on GotoBLAS2"
 HOMEPAGE="http://xianyi.github.com/OpenBLAS/"
@@ -21,10 +22,6 @@ IUSE="dynamic openmp pthread relapack static-libs test"
 REQUIRED_USE="?? ( openmp pthread )"
 RESTRICT="!test? ( test )"
 
-RDEPEND="
-	>=app-eselect/eselect-blas-0.2
-	>=app-eselect/eselect-lapack-0.2
-"
 BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
@@ -94,7 +91,7 @@ pkg_setup() {
 	# setting OPENBLAS_TARGET to override auto detection
 	# in case the toolchain is not enough to detect
 	# https://github.com/xianyi/OpenBLAS/blob/develop/TargetList.txt
-	if [ ! use dynamic ] && [ ! -z "${OPENBLAS_TARGET}" ] ; then
+	if ! use dynamic && [[ ! -z "${OPENBLAS_TARGET}" ]] ; then
 		export TARGET="${OPENBLAS_TARGET}"
 	fi
 
@@ -121,10 +118,10 @@ src_prepare() {
 src_compile() {
 	default
 
-	provider-link_blas "-L. -lopenblas"
-	provider-link_cblas "-L. -lopenblas"
-	provider-link_lapack "-L. -lopenblas"
-	provider-link_lapacke "-L. -lopenblas"
+	provider-link-c "libblas.so.3" "-L. -lopenblas"
+	provider-link-c "libcblas.so.3" "-L. -lopenblas"
+	provider-link-c "liblapack.so.3" "-L. -lopenblas"
+	provider-link-c "liblapacke.so.3" "-L. -lopenblas"
 }
 
 src_test() {
@@ -138,5 +135,8 @@ src_install() {
 
 	dodoc GotoBLAS_*.txt *.md Changelog.txt
 
-	provider-install_libs
+	provider-install-lib "libblas.so.3"
+	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/openblas"
+	provider-install-lib "liblapack.so.3"
+	provider-install-lib "liblapacke.so.3" "/usr/$(get_libdir)/lapack/openblas"
 }

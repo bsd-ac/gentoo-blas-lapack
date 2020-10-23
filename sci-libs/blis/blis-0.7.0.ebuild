@@ -4,10 +4,9 @@
 EAPI=7
 
 PYTHON_COMPAT=( python3_{6..9} )
-PROVIDER_BLAS=1
-PROVIDER_CBLAS=1
-PROVIDER_NAME=blis
-inherit blas-lapack-provider fortran-2 python-any-r1
+PROVIDER_NAME="blis"
+PROVIDER_LIBS="blas"
+inherit chainload-provider fortran-2 python-any-r1
 
 DESCRIPTION="BLAS-like Library Instantiation Software Framework"
 HOMEPAGE="https://github.com/flame/blis"
@@ -16,12 +15,9 @@ SRC_URI="https://github.com/flame/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc64 ~x86"
-IUSE="openmp pthread static-libs doc 64bit-index"
+IUSE="openmp pthread static-libs doc"
 REQUIRED_USE="?? ( openmp pthread )"
 
-RDEPEND="
-	!64bit-index? ( >=app-eselect/eselect-blas-0.2 )
-"
 DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
 "
@@ -61,12 +57,6 @@ src_configure() {
 		$(use_enable static-libs static)
 	)
 
-	use 64bit-index && \
-	myconf+=(
-		--int-size=64
-		--blas-int-size=64
-	)
-
 	# threading backend - openmp/pthreads/no
 	if use openmp; then
 		myconf+=( --enable-threading=openmp )
@@ -86,10 +76,8 @@ src_compile() {
 	SET_RPATH=no \
 	default
 
-	if ! use 64bit-index ; then
-		provider-link_blas "-Llib/${BLIS_CONFNAME} -lblis"
-		provider-link_cblas "-Llib/${BLIS_CONFNAME} -lblis"
-	fi
+	provider-link-c "libblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
+	provider-link-c "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
 }
 
 src_test() {
@@ -101,15 +89,6 @@ src_install() {
 	default
 	use doc && dodoc README.md docs/*.md
 
-	use 64bit-index || provider-install_libs
-}
-
-src_postinst() {
-	use 64bit-index || \
-		blas-lapack-provider_src_postinst
-}
-
-src_postrm() {
-	! use 64bit-index || \
-		blas-lapack-provider_src_postrm
+	provider-install-lib "libblas.so.3"
+	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/blis"
 }

@@ -1,15 +1,15 @@
 BDEPEND=dev-vcs/git >=app-portage/elt-patches-20170815 || ( >=sys-devel/automake-1.16.1:1.16 >=sys-devel/automake-1.15.1:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4
 DEFINED_PHASES=compile configure install postinst postrm prepare setup test
-DEPEND=virtual/fortran
+DEPEND=app-eselect/eselect-library virtual/fortran
 DESCRIPTION=high-performance object-based library for DLA computations
 EAPI=7
 HOMEPAGE=https://github.com/flame/libflame
 IUSE=scc static-libs supermatrix test cpu_flags_x86_sse3
 KEYWORDS=~amd64
 LICENSE=BSD
-RDEPEND=!sci-libs/libflame-amd virtual/fortran
+RDEPEND=!sci-libs/libflame-amd app-eselect/eselect-library virtual/fortran
 RESTRICT=!test? ( test )
 SLOT=0
 SRC_URI=https://github.com/flame/libflame/archive/b112dd8f0d917aa1f19747a61e01f83758692b7f.tar.gz -> libflame-5.2.0_p20200519.tar.gz
-_eclasses_=autotools	7d999b62b8749fad43fff00620cedf47	blas-lapack-provider	c8299270b0b63ce76fcec54bd3b7ff6f	fortran-2	b4796813ccda91c9c0d3463fc90aa969	libtool	f143db5a74ccd9ca28c1234deffede96	multilib	98584e405e2b0264d37e8f728327fed1	toolchain-funcs	605c126bed8d87e4378d5ff1645330cb
-_md5_=2710abc277e8e386f813693d7e1437da
+_eclasses_=autotools	7d999b62b8749fad43fff00620cedf47	chainload-provider	16c04665b5a10e81276b10ba3fbc7415	fortran-2	b4796813ccda91c9c0d3463fc90aa969	library-provider	228c4e9ef27ac95c809b584bba919617	libtool	f143db5a74ccd9ca28c1234deffede96	multilib	98584e405e2b0264d37e8f728327fed1	toolchain-funcs	605c126bed8d87e4378d5ff1645330cb
+_md5_=079ab3d011cc44e2fff27648c29750d0

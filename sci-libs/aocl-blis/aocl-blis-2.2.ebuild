@@ -4,9 +4,9 @@
 EAPI=7
 
 PYTHON_COMPAT=( python3_{7..9} )
-PROVIDER_NAME="blis-amd"
-PROVIDER_BLAS=1
-inherit blas-lapack-provider fortran-2 python-any-r1 toolchain-funcs
+PROVIDER_NAME="aocl-blis"
+PROVIDER_LIBS="blas"
+inherit chainload-provider fortran-2 python-any-r1 toolchain-funcs
 
 DESCRIPTION="AMD optimized BLAS-like Library Instantiation Software Framework"
 HOMEPAGE="https://developer.amd.com/amd-aocl/"
@@ -22,11 +22,10 @@ fi
 
 LICENSE="BSD"
 SLOT="0"
-IUSE="64bit-index doc openmp pthread static-libs"
+IUSE="doc openmp pthread static-libs"
 REQUIRED_USE="?? ( openmp pthread )"
 
 RDEPEND="
-	!64bit-index? ( >=app-eselect/eselect-blas-0.2 )
 	!sci-libs/blis
 "
 DEPEND+="${RDEPEND}
@@ -69,12 +68,6 @@ src_configure() {
 		$(use_enable static-libs static)
 	)
 
-	use 64bit-index && \
-	myconf+=(
-		--int-size=64
-		--blas-int-size=64
-	)
-
 	# threading backend - openmp/pthreads/no
 	if use openmp; then
 		myconf+=( --enable-threading=openmp )
@@ -93,14 +86,12 @@ src_compile() {
 	SET_RPATH=no \
 	default
 
-	if ! use 64bit-index ; then
-		local -x BLIS_LIB=blis-mt
-		if ! use openmp && ! use pthread ; then
-			BLIS_LIB=blis
-		fi
-		provider-link_blas "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
-		provider-link_cblas "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
+	local -x BLIS_LIB=blis-mt
+	if ! use openmp && ! use pthread ; then
+		BLIS_LIB=blis
 	fi
+	provider-link-c "libblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
+	provider-link-c "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
 }
 
 src_test() {
@@ -111,15 +102,6 @@ src_install() {
 	default
 	use doc && dodoc README.md docs/*.md
 
-	use 64bit-index || provider-install_libs
-}
-
-src_postinst() {
-	use 64bit-index || \
-		blas-lapack-provider_src_postinst
-}
-
-src_postrm() {
-	use 64bit-index || \
-		blas-lapack-provider_src_postrm
+	provider-install-lib "libblas.so.3"
+	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/aocl-blis"
 }
