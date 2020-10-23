@@ -3,14 +3,13 @@
 
 EAPI=7
 
-DESCRIPTION="Library switching module for eselect"
-HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
+DESCRIPTION="runtime library switching module for eselect"
+HOMEPAGE="https://github.com/bsd-ac/gentoo-blas-lapack"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86"
 
-# Need skel.bash lib
 RDEPEND="app-admin/eselect"
 DEPEND="${RDEPEND}"
 
