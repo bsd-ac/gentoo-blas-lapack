@@ -7,7 +7,7 @@
 # @AUTHOR:
 # Aisha Tammy <gentoo@aisha.cc>
 # @SUPPORTED_EAPIS: 7
-# @BLURB: For providers of BLAS and CBLAS
+# @BLURB: Dummy linking utilities for providers of BLAS/LAPACK
 # @DESCRIPTION:
 # Helper functions for creating dummy libraries which link
 # to actual providers to get around runtime SONAME dependencies
@@ -66,25 +66,25 @@ EXPORT_FUNCTIONS pkg_postinst pkg_postrm
 # @INTERNAL
 # @DESCRIPTION:
 # SONAME for libblas.so
-LIBBLAS="libblas.so.3"
+LIBBLAS="${LIBBLAS:-libblas.so.3}"
 
 # @ECLASS-VARIABLE: LIBCBLAS
 # @INTERNAL
 # @DESCRIPTION:
 # SONAME for libcblas.so
-LIBCBLAS="libcblas.so.3"
+LIBCBLAS="${LIBCBLAS:-libcblas.so.3}"
 
 # @ECLASS-VARIABLE: LIBLAPACK
 # @INTERNAL
 # @DESCRIPTION:
 # SONAME for liblapack.so
-LIBLAPACK="liblapack.so.3"
+LIBLAPACK="${LIBLAPACK:-liblapack.so.3}"
 
 # @ECLASS-VARIABLE: LIBLAPACKE
 # @INTERNAL
 # @DESCRIPTION:
 # SONAME for liblapacke.so
-LIBLAPACKE="liblapacke.so.3"
+LIBLAPACKE="${LIBLAPACKE:-liblapacke.so.3}"
 
 # @FUNCTION: provider-link_blas
 # @USAGE: <prepended_ldflags>
@@ -103,7 +103,7 @@ provider-link_blas() {
 
 	cat <<-EOF > "${T}"/gentoo_blas.c || die
 
-	const char *__gentoo_blas_provider(void){
+	const char *__gentoo_${LIBBLAS%%.*}_provider(void){
 		return "${PROVIDER_NAME}";
 	}
 	EOF
@@ -131,7 +131,7 @@ provider-link_cblas() {
 
 	cat <<-EOF > "${T}"/gentoo_cblas.c || die
 
-	const char *__gentoo_cblas_provider(void){
+	const char *__gentoo_${LIBCBLAS%%.*}_provider(void){
 		return "${PROVIDER_NAME}";
 	}
 	EOF
@@ -159,7 +159,7 @@ provider-link_lapack() {
 
 	cat <<-EOF > "${T}"/gentoo_lapack.c || die
 
-	const char *__gentoo_lapack_provider(void){
+	const char *__gentoo_${LIBLAPACK%%.*}_provider(void){
 		return "${PROVIDER_NAME}";
 	}
 	EOF
@@ -187,7 +187,7 @@ provider-link_lapacke() {
 
 	cat <<-EOF > "${T}"/gentoo_lapacke.c || die
 
-	const char *__gentoo_lapacke_provider(void){
+	const char *__gentoo_${LIBLAPACKE%%.*}_provider(void){
 		return "${PROVIDER_NAME}";
 	}
 	EOF
@@ -201,7 +201,7 @@ EOF
 # @FUNCTION: provider-install_libs
 # @USAGE:
 # @DESCRIPTION:
-# Install the created ${LIBBLAS} and ${LIBLAPAC}
+# Install the created ${LIBBLAS} and ${LIBLAPACK}
 # to the providers eselect folder
 provider-install_libs() {
 	if [[ ! -z "${PROVIDER_BLAS+set}" ]]; then
