@@ -1,6 +1,3 @@
-# Copyright 2019-2020 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
 # @ECLASS: chainload-provider.eclass
 # @MAINTAINER:
 # Gentoo Science Project <sci@gentoo.org>
