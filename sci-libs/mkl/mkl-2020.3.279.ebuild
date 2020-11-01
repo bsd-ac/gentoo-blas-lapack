@@ -18,6 +18,7 @@ LICENSE="ISSL"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="static-libs"
+RESTRICT="strip"
 
 # MKL uses Intel/LLVM OpenMP by default.
 # One can change the threadding layer to "gnu" or "tbb"
@@ -28,7 +29,6 @@ RDEPEND="
 
 QA_PREBUILT="*"
 QA_TEXTRELS="*"
-QA_PRESTRIPPED="*"
 QA_SONAME="*"
 
 # first unpack all rpms
