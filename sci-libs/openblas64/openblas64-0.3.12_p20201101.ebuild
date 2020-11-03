@@ -3,14 +3,18 @@
 
 EAPI=7
 
-PROVIDER_NAME=openblas64
-PROVIDER_LIBS="blas64 lapack64"
+PROVIDER_NAME=openblas
+PROVIDER_LIBS="blas lapack"
+PROVIDER_BLAS=1
+PROVIDER_LAPACK=1
+PROVIDER_LAPACKE=1
 inherit chainload-provider flag-o-matic fortran-2 toolchain-funcs
 
 DESCRIPTION="Optimized BLAS library based on GotoBLAS2"
 HOMEPAGE="http://xianyi.github.com/OpenBLAS/"
-SRC_URI="https://github.com/xianyi/OpenBLAS/archive/v${PV}.tar.gz -> openblas-${PV}.tar.gz"
-S="${WORKDIR}"/OpenBLAS-${PV}
+COMMIT=fab952bee4ba65dd9950aef739dda1813facfe76
+SRC_URI="https://github.com/xianyi/OpenBLAS/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
+S="${WORKDIR}"/OpenBLAS-${COMMIT}
 
 LICENSE="BSD"
 SLOT="0"
@@ -22,7 +26,7 @@ RESTRICT="!test? ( test )"
 BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
-	"${FILESDIR}/${PN}-0.3.10-dont-clobber-fflags.patch"
+	"${FILESDIR}/${PN}-0.3.12-soname.patch"
 )
 
 pkg_pretend() {
@@ -41,9 +45,7 @@ pkg_pretend() {
 	elog "using OPENBLAS_NPARALLEL, default=8."
 }
 
-pkg_setup() {
-	fortran-2_pkg_setup
-
+src_configure() {
 	# List of most configurable options - Makefile.rule
 
 	# https://github.com/xianyi/OpenBLAS/pull/2663
@@ -102,29 +104,22 @@ pkg_setup() {
 	if ! use relapack; then
 		BUILD_RELAPACK=0
 	fi
+	export BUILD_RELAPACK
 
-	export PREFIX="${EPREFIX}/usr" BUILD_RELAPACK
-
-	### for blas64 bit
-	export INTERFACE64=1
+	export PREFIX="${EPREFIX}/usr" LIBSONAMEBASE=openblas64
 }
 
 src_prepare() {
-	# disable tests by default
-	sed -e "/all ::/s/tests //" -i Makefile || die
-	# change soname to libopenblas64.so
-	sed -e "/^LIBNAMEBASE =/s/openblas/openblas64/" \
-	    -i Makefile.system || die
 	default
 }
 
 src_compile() {
 	default
 
-	provider-link-c "libblas64.so.3" "-L. -lopenblas64"
-	provider-link-c "libcblas64.so.3" "-L. -lopenblas64"
-	provider-link-c "liblapack64.so.3" "-L. -lopenblas64"
-	provider-link-c "liblapacke64.so.3" "-L. -lopenblas64"
+	provider-link-c "libblas.so.3" "-L. -lopenblas"
+	provider-link-c "libcblas.so.3" "-L. -lopenblas"
+	provider-link-c "liblapack.so.3" "-L. -lopenblas"
+	provider-link-c "liblapacke.so.3" "-L. -lopenblas"
 }
 
 src_test() {
@@ -132,27 +127,14 @@ src_test() {
 }
 
 src_install() {
-	local libdir=$(get_libdir)
 	emake install DESTDIR="${D}" \
 	              OPENBLAS_INCLUDE_DIR='$(PREFIX)'/include/${PN} \
-	              OPENBLAS_LIBRARY_DIR='$(PREFIX)'/${libdir}
+	              OPENBLAS_LIBRARY_DIR='$(PREFIX)'/$(get_libdir)
 
 	dodoc GotoBLAS_*.txt *.md Changelog.txt
 
-	# fix package files to move to openblas64
-	sed -e "/-lopenblas/s/openblas/openblas64/" \
-	    -e "/Name: /s/openblas/openblas64/" \
-	    -e "/openblas_/s/openblas/openblas64/" \
-	    -i "${ED}"/usr/${libdir}/pkgconfig/openblas.pc  || die
-	sed -e "s/OpenBLAS/OpenBLAS64/g" \
-	    -i "${ED}"/usr/${libdir}/cmake/openblas/OpenBLASConfig.cmake  || die
-	mv "${ED}"/usr/${libdir}/pkgconfig/openblas{,64}.pc || die
-	mv "${ED}"/usr/${libdir}/cmake/openblas/OpenBLAS{,64}Config.cmake || die
-	mv "${ED}"/usr/${libdir}/cmake/openblas/OpenBLAS{,64}ConfigVersion.cmake || die
-	mv "${ED}"/usr/${libdir}/cmake/openblas{,64} || die
-
-	provider-install-lib "libblas64.so.3"
-	provider-install-lib "libcblas64.so.3" "/usr/$(get_libdir)/blas64/openblas64"
-	provider-install-lib "liblapack64.so.3"
-	provider-install-lib "liblapacke64.so.3" "/usr/$(get_libdir)/lapack64/openblas64"
+	provider-install-lib "libblas.so.3"
+	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/openblas"
+	provider-install-lib "liblapack.so.3"
+	provider-install-lib "liblapacke.so.3" "/usr/$(get_libdir)/lapack/openblas"
 }

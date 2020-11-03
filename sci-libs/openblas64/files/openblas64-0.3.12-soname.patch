@@ -1,0 +1,77 @@
+diff --git a/Makefile b/Makefile
+index a9af62a..ec5c82a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -39,7 +39,7 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cp
+ .PHONY : all libs netlib $(RELA) test ctest shared install
+ .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
+ 
+-all :: libs netlib $(RELA) tests shared
++all :: libs netlib $(RELA) shared
+ 	@echo
+ 	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
+ 	@echo
+@@ -263,7 +263,7 @@ prof_lapack : lapack_prebuild
+ lapack_prebuild :
+ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+-	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
++	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
+diff --git a/Makefile.install b/Makefile.install
+index 7c1a3ca..e8b6446 100644
+--- a/Makefile.install
++++ b/Makefile.install
+@@ -9,7 +9,7 @@ OPENBLAS_INCLUDE_DIR := $(PREFIX)/include
+ OPENBLAS_LIBRARY_DIR := $(PREFIX)/lib
+ OPENBLAS_BINARY_DIR := $(PREFIX)/bin
+ OPENBLAS_BUILD_DIR := $(CURDIR)
+-OPENBLAS_CMAKE_DIR := $(OPENBLAS_LIBRARY_DIR)/cmake/openblas
++OPENBLAS_CMAKE_DIR := $(OPENBLAS_LIBRARY_DIR)/cmake/$(LIBSONAMEBASE)
+ OPENBLAS_CMAKE_CONFIG := OpenBLASConfig.cmake
+ OPENBLAS_CMAKE_CONFIG_VERSION := OpenBLASConfigVersion.cmake
+ OPENBLAS_PKGCONFIG_DIR := $(OPENBLAS_LIBRARY_DIR)/pkgconfig
+@@ -150,13 +150,13 @@ endif
+ endif
+ 
+ #Generating openblas.pc
+-	@echo Generating openblas.pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
+-	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) > "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+-	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+-	@echo 'openblas_config= USE_64BITINT='$(USE_64BITINT) 'DYNAMIC_ARCH='$(DYNAMIC_ARCH) 'DYNAMIC_OLDER='$(DYNAMIC_OLDER) 'NO_CBLAS='$(NO_CBLAS) 'NO_LAPACK='$(NO_LAPACK) 'NO_LAPACKE='$(NO_LAPACKE) 'NO_AFFINITY='$(NO_AFFINITY) 'USE_OPENMP='$(USE_OPENMP) $(CORE) 'MAX_THREADS='$(NUM_THREADS)>> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+-	@echo 'version='$(VERSION) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+-	@echo 'extralib='$(PKG_EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+-	@cat openblas.pc.in >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
++	@echo Generating $(LIBSONAMEBASE).pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
++	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) > "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
++	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
++	@echo 'openblas_config= USE_64BITINT='$(USE_64BITINT) 'DYNAMIC_ARCH='$(DYNAMIC_ARCH) 'DYNAMIC_OLDER='$(DYNAMIC_OLDER) 'NO_CBLAS='$(NO_CBLAS) 'NO_LAPACK='$(NO_LAPACK) 'NO_LAPACKE='$(NO_LAPACKE) 'NO_AFFINITY='$(NO_AFFINITY) 'USE_OPENMP='$(USE_OPENMP) $(CORE) 'MAX_THREADS='$(NUM_THREADS)>> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
++	@echo 'version='$(VERSION) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
++	@echo 'extralib='$(PKG_EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
++	@cat openblas.pc.in >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE).pc"
+ 
+ 
+ #Generating OpenBLASConfig.cmake
+diff --git a/Makefile.system b/Makefile.system
+index 52d3e2c..afbdb6b 100644
+--- a/Makefile.system
++++ b/Makefile.system
+@@ -1263,10 +1263,14 @@ ifndef SYMBOLSUFFIX
+ SYMBOLSUFFIX =
+ endif
+ 
++ifndef LIBSONAMEBASE
++LIBSONAMEBASE = openblas
++endif
++
+ ifndef LIBNAMESUFFIX
+-LIBNAMEBASE = $(SYMBOLPREFIX)openblas$(SYMBOLSUFFIX)
++LIBNAMEBASE = $(SYMBOLPREFIX)$(LIBSONAMEBASE)$(SYMBOLSUFFIX)
+ else
+-LIBNAMEBASE = $(SYMBOLPREFIX)openblas$(SYMBOLSUFFIX)_$(LIBNAMESUFFIX)
++LIBNAMEBASE = $(SYMBOLPREFIX)$(LIBSONAMEBASE)$(SYMBOLSUFFIX)_$(LIBNAMESUFFIX)
+ endif
+ 
+ ifeq ($(OSNAME), CYGWIN_NT)
