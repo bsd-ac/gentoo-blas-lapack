@@ -55,7 +55,7 @@ library-provider_pkg_postinst() {
 		if [[ $icnt -lt ${#PROVIDER_DIRS[@]} ]]; then
 			pdir="${PROVIDER_DIRS[$icnt]}"
 		else
-			pdir="${EROOT}/usr/${libdir}/${plib}/${PROVIDER_NAME}"
+			pdir="${EROOT%/}/usr/${libdir}/${plib}/${PROVIDER_NAME}"
 		fi
 		icnt=$((icnt + 1))
 		elog "adding ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
