@@ -18,7 +18,7 @@ S="${WORKDIR}"/OpenBLAS-${PV}
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
-IUSE="dynamic openmp pthread relapack static-libs test"
+IUSE="dynamic openmp pthread +relapack test"
 REQUIRED_USE="?? ( openmp pthread )"
 RESTRICT="!test? ( test )"
 
@@ -81,7 +81,6 @@ pkg_setup() {
 	# generally detected automatically from cross toolchain
 	use dynamic && \
 		export DYNAMIC_ARCH=1 \
-		       TARGET=GENERIC \
 		       NO_AFFINITY=1 \
 		       TARGET=GENERIC
 
@@ -95,11 +94,7 @@ pkg_setup() {
 		export TARGET="${OPENBLAS_TARGET}"
 	fi
 
-	if ! use static-libs; then
-		export NO_STATIC=1
-	else
-		export NO_STATIC=0
-	fi
+	export NO_STATIC=1
 
 	BUILD_RELAPACK=1
 	if ! use relapack; then
@@ -111,7 +106,7 @@ pkg_setup() {
 
 src_prepare() {
 	# disable tests by default
-	sed -e "/all ::/s/tests //" -i Makefile || die
+	sed -e "/^all ::/s/tests //" -i Makefile || die
 	default
 }
 
