@@ -158,11 +158,13 @@ multilib_src_install() {
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libblas.so.3
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libcblas.so
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libcblas.so.3
+	dosym ../../libomp.so    usr/$(get_libdir)/blas/mkl/libiomp5.so
 	dodir /usr/$(get_libdir)/lapack/mkl
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapack.so
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapack.so.3
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapacke.so
 	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapacke.so.3
+	dosym ../../libomp.so    usr/$(get_libdir)/lapack/mkl/libiomp5.so
 
 	# for some reason pkgconfig files are only for amd64
 	[[ ${MULTIBUILD_VARIANT} =~ 'amd64' ]] || return
