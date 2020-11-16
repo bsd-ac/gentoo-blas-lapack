@@ -5,7 +5,7 @@ PROVIDER_LIBS="blas lapack"
 MULTILIB_COMPAT=( abi_x86_{32,64} )
 inherit library-provider multilib-build rpm
 
-MAGIC=16917            # from registration center
+MAGIC=15540            # from registration center
 MY_P=${P/-/_}          # mkl_2020.4.304
 MY_PV=$(ver_rs 2 '-')  # 2020.4-304
 
@@ -67,7 +67,7 @@ INTEL_DIST_X86_RPMS=(
 	mkl-gnu-rt-32bit
 	mkl-tbb-32bit
 	mkl-tbb-rt
-	intel-openmp-32bit-19.1.3-304-19.1.3-304.x86_64.rpm
+	intel-openmp-32bit-19.0.4-243-19.0.4-243.x86_64.rpm
 )
 INTEL_DIST_AMD64_RPMS=(
 	mkl-cluster
@@ -84,7 +84,7 @@ INTEL_DIST_AMD64_RPMS=(
 	mkl-pgi-rt
 	mkl-tbb
 	mkl-tbb-rt
-	intel-openmp-19.1.3-304-19.1.3-304.x86_64.rpm
+	intel-openmp-19.0.4-243-19.0.4-243.x86_64.rpm
 )
 INTEL_DIST_DAT_RPMS=(
 	mkl-common-c
