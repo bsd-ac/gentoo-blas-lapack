@@ -3,7 +3,7 @@ EAPI=7
 PROVIDER_NAME=mkl
 PROVIDER_LIBS="blas lapack"
 MULTILIB_COMPAT=( abi_x86_{32,64} )
-inherit library-provider multilib-build
+inherit library-provider multilib-build rpm
 
 MAGIC=16917            # from registration center
 MY_P=${P/-/_}          # mkl_2020.4.304
@@ -30,6 +30,7 @@ RDEPEND="
 QA_PREBUILT="*"
 QA_TEXTRELS="*"
 QA_SONAME="*"
+QA_MULTILIB_PATHS="/usr/lib.*/libmkl_tbb_thread.so"
 
 # first unpack all rpms
 # find folders containing header like, static and dynamic lib files
@@ -172,7 +173,6 @@ multilib_src_install() {
 	insinto /usr/$(get_libdir)/pkgconfig
 	for pc in "${pc_files[@]}" ; do
 		doins "${pc}"
-		# at what point should we just make our own...
 		sed -e "s:@PREFIX@:${EPREFIX}/usr:" \
 		    -i "${ED}"/usr/$(get_libdir)/pkgconfig/${pc##*/} || die
 	done
@@ -188,10 +188,10 @@ src_install() {
 	multilib_foreach_abi multilib_src_install
 }
 
-src_postinst() {
+pkg_postinst() {
 	multilib_foreach_abi library-provider_src_postinst
 }
 
-src_postrm() {
+pkg_postrm() {
 	multilib_foreach_abi library-provider_src_postrm
 }

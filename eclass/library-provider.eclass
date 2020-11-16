@@ -53,13 +53,13 @@ library-provider_pkg_postinst() {
 	local icnt=0
 	for plib in ${PROVIDER_LIBS[@]}; do
 		if [[ $icnt -lt ${#PROVIDER_DIRS[@]} ]]; then
-			pdir="${PROVIDER_DIRS[$icnt]}"
+			pdir="${EROOT}%/}${PROVIDER_DIRS[$icnt]}"
 		else
 			pdir="${EROOT%/}/usr/${libdir}/${plib}/${PROVIDER_NAME}"
 		fi
 		icnt=$((icnt + 1))
 		elog "adding ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
-		eselect library add ${plib} ${libdir} "${EROOT}"/${pdir} ${PROVIDER_NAME}
+		eselect library add ${plib} ${libdir} ${pdir} ${PROVIDER_NAME}
 		elog "added ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
 		local current_library=$(eselect library show ${plib} ${libdir} | cut -d' ' -f2)
 		if [[ ${current_library} == "${PROVIDER_NAME}" ]]; then
