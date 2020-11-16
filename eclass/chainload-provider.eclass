@@ -34,7 +34,7 @@ case "${EAPI:-0}" in
 		;;
 esac
 
-inherit library-provider
+inherit library-provider toolchain-funcs
 
 # @FUNCTION: provider-link-c
 # @USAGE: <libname> [<prepended_ldflags>]
@@ -59,6 +59,8 @@ provider-link-c() {
 		return "${PROVIDER_NAME}";
 	}
 	EOF
+
+	tc-export CC
 	emake -f - <<EOF
 ${T}/${libname}:
 	\$(CC) -shared -fPIC \$(CFLAGS) -o "${T}"/${libname} "${T}"/gentoo_${lname}.c -Wl,--soname,${libname} ${@} \$(LDFLAGS)
