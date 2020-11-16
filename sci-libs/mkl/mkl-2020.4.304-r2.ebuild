@@ -3,7 +3,7 @@ EAPI=7
 PROVIDER_NAME=mkl
 PROVIDER_LIBS="blas lapack"
 MULTILIB_COMPAT=( abi_x86_{32,64} )
-inherit library-provider multilib-build rpm
+inherit library-provider chainload-provider multilib-build rpm
 
 MAGIC=16917            # from registration center
 MY_P=${P/-/_}          # mkl_2020.4.304
@@ -154,18 +154,15 @@ multilib_src_install() {
 		done
 	done
 
-	dodir /usr/$(get_libdir)/blas/mkl
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libblas.so
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libblas.so.3
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libcblas.so
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/blas/mkl/libcblas.so.3
-	dosym ../../libomp.so    usr/$(get_libdir)/blas/mkl/libiomp5.so
-	dodir /usr/$(get_libdir)/lapack/mkl
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapack.so
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapack.so.3
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapacke.so
-	dosym ../../libmkl_rt.so usr/$(get_libdir)/lapack/mkl/liblapacke.so.3
-	dosym ../../libomp.so    usr/$(get_libdir)/lapack/mkl/libiomp5.so
+	provider-link-c "libblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-c "libcblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-c "liblapack.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-c "liblapacke.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+
+	provider-install-lib libblas.so.3
+	provider-install-lib libcblas.so.3 /usr/$(get_libdir)/blas/mkl
+	provider-install-lib liblapack.so.3
+	provider-install-lib liblapacke.so.3 /usr/$(get_libdir)/lapack/mkl
 
 	# for some reason pkgconfig files are only for amd64
 	[[ ${MULTIBUILD_VARIANT} =~ 'amd64' ]] || return
