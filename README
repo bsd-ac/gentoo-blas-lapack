@@ -30,6 +30,17 @@ as doing a `dlopen` on that already causes symbol resolution errors.
 So far, testing has been done with numpy and scipy, both heavy users of these libraries
 and they have been working perfectly.
 
+## Debugging
+
+There are some simple programs in the DEBUG directory which contains C++, fortran and
+python code to do a very simple matrix multiplication of 1500x1500.
+
+To check if the BLAS LAPACK switch has worked on your computer just go into the
+DEBUG directory and do - make run.
+There should be a noticeable difference in the run time after doing a switch
+using eselect library set blas <openblas/mkl> as opposed to when you do not have
+any provider selected - eselect library unset blas
+
 ## Future work
 
 - Can we do a function redirection to the appropriate libraries, without a dlopen ?
