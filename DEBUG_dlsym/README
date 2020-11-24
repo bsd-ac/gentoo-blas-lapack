@@ -1,0 +1,16 @@
+example for showing that dlopen and dlsym work with packaged chainloading mechanism
+
+Steps to test
+
+```
+make
+make run
+eselect library set blas openblas
+make run
+eselect library set blas mkl
+make run
+eselect library unset blas
+make run
+```
+
+At each point, you should have a separate running time, demonstrating that the correct library was opened and loaded.
