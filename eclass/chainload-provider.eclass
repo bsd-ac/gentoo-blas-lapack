@@ -25,12 +25,19 @@ esac
 
 inherit flag-o-matic toolchain-funcs
 
+# @ECLASS-VARIABLE: PROVIDER_NAME
+# @DEFAULT_UNSET
+# @REQUIRED
+# @DESCRIPTION:
+# Name of library provider to be used all
+# library registrations
+[[ -z "${PROVIDER_NAME}" ]] && die "PROVIDER_NAME needs to be defined and non empty"
+
 # @FUNCTION: provider-link-lib
 # @USAGE: <libname> <prepended_ldflags>
 # @DESCRIPTION:
 # Create a dummy C library for chain loading.
 # Creates a ${libname} in the ${T} folder.
-#
 # EXAMPLE:
 # @CODE
 # provider-link-lib "libcblas.so.3" "-Llib/generic -lblis-mt"

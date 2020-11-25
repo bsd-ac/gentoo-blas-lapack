@@ -5,10 +5,7 @@ EAPI=7
 
 PROVIDER_NAME=openblas
 PROVIDER_LIBS="blas lapack"
-PROVIDER_BLAS=1
-PROVIDER_LAPACK=1
-PROVIDER_LAPACKE=1
-inherit chainload-provider flag-o-matic fortran-2 toolchain-funcs
+inherit library-provider chainload-provider flag-o-matic fortran-2 toolchain-funcs
 
 DESCRIPTION="Optimized BLAS library based on GotoBLAS2"
 HOMEPAGE="http://xianyi.github.com/OpenBLAS/"
@@ -17,12 +14,10 @@ S="${WORKDIR}"/OpenBLAS-${PV}
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
 IUSE="dynamic openmp pthread +relapack test"
 REQUIRED_USE="?? ( openmp pthread )"
 RESTRICT="!test? ( test )"
-
-BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
 	"${FILESDIR}/${PN}-0.3.10-dont-clobber-fflags.patch"
@@ -44,9 +39,13 @@ pkg_pretend() {
 	elog "using OPENBLAS_NPARALLEL, default=8."
 }
 
-pkg_setup() {
-	fortran-2_pkg_setup
+src_prepare() {
+	default
+	# disable tests by default
+	sed -e "/^all ::/s/tests//" -i Makefile || die
+}
 
+src_configure() {
 	# List of most configurable options - Makefile.rule
 
 	# https://github.com/xianyi/OpenBLAS/pull/2663
@@ -102,12 +101,6 @@ pkg_setup() {
 	fi
 
 	export PREFIX="${EPREFIX}/usr" BUILD_RELAPACK
-}
-
-src_prepare() {
-	# disable tests by default
-	sed -e "/^all ::/s/tests //" -i Makefile || die
-	default
 }
 
 src_compile() {
