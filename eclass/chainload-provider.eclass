@@ -16,7 +16,7 @@ case "${EAPI:-0}" in
 	0|1|2|3|4|5|6)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	7,8)
+	7|8)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
@@ -26,7 +26,7 @@ esac
 inherit flag-o-matic toolchain-funcs
 
 # @FUNCTION: provider-link-lib
-# @USAGE: <libname> [<prepended_ldflags>]
+# @USAGE: <libname> <prepended_ldflags>
 # @DESCRIPTION:
 # Create a dummy C library for chain loading.
 # Creates a ${libname} in the ${T} folder.
@@ -38,8 +38,10 @@ inherit flag-o-matic toolchain-funcs
 provider-link-lib() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	local libname lname
-	libname=$1
+	if [[ $# -ne 2 ]]; then
+		die -q "need <libname> <prepended_ldflags>"
+	fi
+	local libname=$1 lname
 	shift 1
 	# remove trailing .so.* and starting lib
 	lname=${libname%%.*}
@@ -64,6 +66,8 @@ EOF
 # Install the created ${libname} to ${dir}
 # ${dir} defaults to /usr/$(get_libdir)/${lname}/${PROVIDER_NAME}
 provider-install-lib() {
+	debug-print-function ${FUNCNAME} "${@}"
+
 	if [[ $# -ne 1 ]] && [[ $# -ne 2 ]]; then
 		die -q "need <libname> [<dir>]"
 	fi
