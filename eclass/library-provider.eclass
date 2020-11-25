@@ -3,17 +3,17 @@
 # Gentoo Science Project <sci@gentoo.org>
 # @AUTHOR:
 # Aisha Tammy <gentoo@aisha.cc>
-# @SUPPORTED_EAPIS: 7
-# @BLURB: trivial functions for eselect library
+# @SUPPORTED_EAPIS: 7,8
+# @BLURB: pkg_postinst/rm functions for eselect library
 # @DESCRIPTION:
-# default implementations for the ebuild
-# operations of a library provider
+# default implementations of pkg_postinst/rm
+# for a library provider
 
 case "${EAPI:-0}" in
 	0|1|2|3|4|5|6)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	7)
+	7|8)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
@@ -21,7 +21,6 @@ case "${EAPI:-0}" in
 esac
 
 RDEPEND="app-eselect/eselect-library"
-DEPEND="${RDEPEND}"
 
 EXPORT_FUNCTIONS pkg_postinst pkg_postrm
 
@@ -29,7 +28,7 @@ EXPORT_FUNCTIONS pkg_postinst pkg_postrm
 # @DEFAULT_UNSET
 # @REQUIRED
 # @DESCRIPTION:
-# Name of libraryprovider to be used all
+# Name of library provider to be used all
 # library registrations
 [[ -z "${PROVIDER_NAME}" ]] && die "PROVIDER_NAME needs to be defined and non empty"
 
@@ -58,16 +57,15 @@ library-provider_pkg_postinst() {
 			pdir="${EROOT%/}/usr/${libdir}/${plib}/${PROVIDER_NAME}"
 		fi
 		icnt=$((icnt + 1))
-		elog "adding ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
+		elog "Adding ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
 		eselect library add ${plib} ${libdir} ${pdir} ${PROVIDER_NAME}
-		elog "added ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
+		elog "Added ${PROVIDER_NAME} [${pdir}] as a provider for ${plib}"
 		local current_library=$(eselect library show ${plib} ${libdir} | cut -d' ' -f2)
+		elog "Current provider: ${plib} ($libdir) -> [${current_library}]"
 		if [[ ${current_library} == "${PROVIDER_NAME}" ]]; then
 			eselect library set ${plib} ${libdir} ${PROVIDER_NAME}
-			elog "Current eselect: ${plib} ($libdir) -> [${current_library}]."
 		else
-			elog "Current eselect: ${plib} ($libdir) -> [${current_library}]."
-			elog "To use ${LIBNAME} [${PROVIDER_NAME}] as the provider, you have to issue (as root):"
+			elog "To use ${PROVIDER_NAME} as the provider for ${plib}, you have to issue (as root):"
 			elog "\t eselect library set ${plib} ${libdir} ${PROVIDER_NAME}"
 		fi
 	done
