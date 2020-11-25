@@ -154,10 +154,10 @@ multilib_src_install() {
 		done
 	done
 
-	provider-link-c "libblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-c "libcblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-c "liblapack.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-c "liblapacke.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-lib "libblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-lib "libcblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-lib "liblapack.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	provider-link-lib "liblapacke.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
 
 	provider-install-lib libblas.so.3
 	provider-install-lib libcblas.so.3 /usr/$(get_libdir)/blas/mkl

@@ -3,51 +3,41 @@
 # Gentoo Science Project <sci@gentoo.org>
 # @AUTHOR:
 # Aisha Tammy <gentoo@aisha.cc>
-# @SUPPORTED_EAPIS: 7
+# @SUPPORTED_EAPIS: 7,8
 # @BLURB: library chainloading utilities, for dummy libraries
 # @DESCRIPTION:
 # Helper functions for creating dummy libraries which link
 # to actual providers to get around runtime SONAME dependencies
 # and without the need to create extra copies of libraries.
-#
 # Specifically made for BLAS and LAPACK providers but is
-# usable for any other library.
-# Notes about BLAS/LAPACK -
-# BLAS/LAPACK specifications do not mandate that the provider
-# for the library needs to have all function symbols
-# present in the linked library itself.
-# Code relying on this behaviour is incorrect and should be
-# patched accordingly and upstream should be notified.
-# 'dlopen' calls to load symbols from the linked libraries
-# ${LIBBLAS}/${LIBCBLAS} are relying on undocumented promises
-# and should instead call the corresponding upstream provider
-# such as libopenblas.so / libmkl_rt.so / libblis-mt.so / etc.
+# usable for any and all libraries.
 
 case "${EAPI:-0}" in
 	0|1|2|3|4|5|6)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	7)
+	7,8)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
 		;;
 esac
 
-inherit library-provider toolchain-funcs
+inherit flag-o-matic toolchain-funcs
 
-# @FUNCTION: provider-link-c
+# @FUNCTION: provider-link-lib
 # @USAGE: <libname> [<prepended_ldflags>]
 # @DESCRIPTION:
-# Create a dummy c library for chain loading.
+# Create a dummy C library for chain loading.
 # Creates a ${libname} in the ${T} folder.
 #
 # EXAMPLE:
 # @CODE
-# provider-link-c "libcblas.so.3" "-Llib/generic -lblis-mt"
+# provider-link-lib "libcblas.so.3" "-Llib/generic -lblis-mt"
 # @CODE
-provider-link-c() {
+provider-link-lib() {
 	debug-print-function ${FUNCNAME} "${@}"
+
 	local libname lname
 	libname=$1
 	shift 1
@@ -61,9 +51,10 @@ provider-link-c() {
 	EOF
 
 	tc-export CC
+	local needed="$(no-as-needed)"
 	emake -f - <<EOF
-${T}/${libname}:
-	\$(CC) -shared -fPIC \$(CFLAGS) -o "${T}"/${libname} "${T}"/gentoo_${lname}.c -Wl,--soname,${libname} ${@} \$(LDFLAGS)
+all:
+	\$(CC) -shared -fPIC \$(CFLAGS) -o "${T}"/${libname} "${T}"/gentoo_${lname}.c -Wl,--soname,${libname} -Wl,--push-state ${needed} ${@} -Wl,--pop-state \$(LDFLAGS)
 EOF
 }
 

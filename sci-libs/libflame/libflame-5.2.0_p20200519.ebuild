@@ -64,7 +64,7 @@ src_configure() {
 
 src_compile() {
 	default
-	provider-link-c "liblapack.so.3" "-Llib/${CHOST} -lflame"
+	provider-link-lib "liblapack.so.3" "-Llib/${CHOST} -lflame"
 
 	use test && emake -Ctest
 }

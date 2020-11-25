@@ -90,8 +90,8 @@ src_compile() {
 	if ! use openmp && ! use pthread ; then
 		BLIS_LIB=blis
 	fi
-	provider-link-c "libblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
-	provider-link-c "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
+	provider-link-lib "libblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
+	provider-link-lib "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -l${BLIS_LIB}"
 }
 
 src_test() {

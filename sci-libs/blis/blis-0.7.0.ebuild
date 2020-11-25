@@ -76,8 +76,8 @@ src_compile() {
 	SET_RPATH=no \
 	default
 
-	provider-link-c "libblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
-	provider-link-c "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
+	provider-link-lib "libblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
+	provider-link-lib "libcblas.so.3" "-Llib/${BLIS_CONFNAME} -lblis"
 }
 
 src_test() {

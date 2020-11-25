@@ -116,10 +116,10 @@ src_prepare() {
 src_compile() {
 	default
 
-	provider-link-c "libblas.so.3" "-L. -lopenblas"
-	provider-link-c "libcblas.so.3" "-L. -lopenblas"
-	provider-link-c "liblapack.so.3" "-L. -lopenblas"
-	provider-link-c "liblapacke.so.3" "-L. -lopenblas"
+	provider-link-lib "libblas.so.3" "-L. -lopenblas"
+	provider-link-lib "libcblas.so.3" "-L. -lopenblas"
+	provider-link-lib "liblapack.so.3" "-L. -lopenblas"
+	provider-link-lib "liblapacke.so.3" "-L. -lopenblas"
 }
 
 src_test() {
