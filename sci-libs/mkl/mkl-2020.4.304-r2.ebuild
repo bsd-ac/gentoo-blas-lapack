@@ -1,7 +1,7 @@
 EAPI=7
 
 PROVIDER_NAME=mkl
-PROVIDER_LIBS="blas lapack"
+PROVIDER_LIBS=( blas lapack )
 MULTILIB_COMPAT=( abi_x86_{32,64} )
 inherit library-provider chainload-provider multilib-build rpm
 
@@ -154,10 +154,11 @@ multilib_src_install() {
 		done
 	done
 
-	provider-link-lib "libblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-lib "libcblas.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-lib "liblapack.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
-	provider-link-lib "liblapacke.so.3" "-L${ED}/usr/lib64 -lmkl_rt"
+	local mklflags=( "-L${ED}/usr/$(get_libdir)" -lmkl_rt )
+	provider-link-lib libblas.so.3    "${mklflags[@]}"
+	provider-link-lib libcblas.so.3   "${mklflags[@]}"
+	provider-link-lib liblapack.so.3  "${mklflags[@]}"
+	provider-link-lib liblapacke.so.3 "${mklflags[@]}"
 
 	provider-install-lib libblas.so.3
 	provider-install-lib libcblas.so.3 /usr/$(get_libdir)/blas/mkl
