@@ -5,8 +5,8 @@ EAPI=7
 
 PYTHON_COMPAT=( python3_{7..9} )
 PROVIDER_NAME="aocl-blis"
-PROVIDER_LIBS="blas"
-inherit chainload-provider fortran-2 python-any-r1 toolchain-funcs
+PROVIDER_LIBS=( "blas" )
+inherit library-provider chainload-provider fortran-2 python-any-r1 toolchain-funcs
 
 DESCRIPTION="AMD optimized BLAS-like Library Instantiation Software Framework"
 HOMEPAGE="https://developer.amd.com/amd-aocl/"
@@ -22,7 +22,7 @@ fi
 
 LICENSE="BSD"
 SLOT="0"
-IUSE="doc openmp pthread static-libs"
+IUSE="doc openmp pthread"
 REQUIRED_USE="?? ( openmp pthread )"
 
 RDEPEND="
@@ -65,7 +65,7 @@ src_configure() {
 		--enable-verbose-make
 		--without-memkind
 		--enable-shared
-		$(use_enable static-libs static)
+		--disable-static
 	)
 
 	# threading backend - openmp/pthreads/no
