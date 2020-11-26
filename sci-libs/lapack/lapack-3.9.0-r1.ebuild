@@ -16,10 +16,6 @@ IUSE="doc test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	!sci-libs/blas-reference
-	!sci-libs/cblas-reference
-	!sci-libs/lapack-reference
-	!sci-libs/lapacke-reference
 	virtual/fortran
 "
 BDEPEND="
