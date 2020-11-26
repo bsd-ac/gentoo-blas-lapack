@@ -1,2 +1,3 @@
 DEBUG/blas
 DEBUG/cblas
+DEBUG_dlopen/blas_dlopen
