@@ -5,10 +5,6 @@
     <bugs-to>https://github.com/flame/blis/issues/</bugs-to>
     <doc>https://github.com/flame/blis</doc>
   </upstream>
-  <maintainer type="person">
-    <name>Mo Zhou</name>
-    <email>lumin@debian.org</email>
-  </maintainer>
   <maintainer type="project">
     <email>sci@gentoo.org</email>
     <name>Gentoo Science Project</name>
@@ -27,6 +23,5 @@
   <use>
     <flag name="openmp">Use openmp threadding model</flag>
     <flag name="pthread">Use pthread threadding model</flag>
-    <flag name="64bit-index">Enable 64bit array indexing, incompatible with runtime switching</flag>
   </use>
 </pkgmetadata>

@@ -5,8 +5,8 @@ EAPI=7
 
 PYTHON_COMPAT=( python3_{6..9} )
 PROVIDER_NAME="blis"
-PROVIDER_LIBS="blas"
-inherit chainload-provider fortran-2 python-any-r1
+PROVIDER_LIBS=( "blas" )
+inherit library-provider chainload-provider fortran-2 python-any-r1
 
 DESCRIPTION="BLAS-like Library Instantiation Software Framework"
 HOMEPAGE="https://github.com/flame/blis"
@@ -15,7 +15,7 @@ SRC_URI="https://github.com/flame/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc64 ~x86"
-IUSE="openmp pthread static-libs doc"
+IUSE="openmp pthread doc"
 REQUIRED_USE="?? ( openmp pthread )"
 
 DEPEND="${RDEPEND}
@@ -54,7 +54,7 @@ src_configure() {
 		--enable-verbose-make
 		--without-memkind
 		--enable-shared
-		$(use_enable static-libs static)
+		--disable-static
 	)
 
 	# threading backend - openmp/pthreads/no
