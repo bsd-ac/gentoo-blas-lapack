@@ -4,7 +4,7 @@
 EAPI=7
 
 PROVIDER_NAME=openblas
-PROVIDER_LIBS="blas lapack"
+PROVIDER_LIBS=( blas lapack )
 inherit library-provider chainload-provider flag-o-matic fortran-2 toolchain-funcs
 
 DESCRIPTION="Optimized BLAS library based on GotoBLAS2"
@@ -106,10 +106,10 @@ src_configure() {
 src_compile() {
 	default
 
-	provider-link-lib "libblas.so.3" "-L. -lopenblas"
-	provider-link-lib "libcblas.so.3" "-L. -lopenblas"
-	provider-link-lib "liblapack.so.3" "-L. -lopenblas"
-	provider-link-lib "liblapacke.so.3" "-L. -lopenblas"
+	provider-link-lib libblas.so.3 -L. -lopenblas
+	provider-link-lib libcblas.so.3 -L. -lopenblas
+	provider-link-lib liblapack.so.3 -L. -lopenblas
+	provider-link-lib liblapacke.so.3 -L. -lopenblas
 }
 
 src_test() {
@@ -123,8 +123,8 @@ src_install() {
 
 	dodoc GotoBLAS_*.txt *.md Changelog.txt
 
-	provider-install-lib "libblas.so.3"
-	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/openblas"
-	provider-install-lib "liblapack.so.3"
-	provider-install-lib "liblapacke.so.3" "/usr/$(get_libdir)/lapack/openblas"
+	provider-install-lib libblas.so.3
+	provider-install-lib libcblas.so.3 "/usr/$(get_libdir)/blas/openblas"
+	provider-install-lib liblapack.so.3
+	provider-install-lib liblapacke.so.3 "/usr/$(get_libdir)/lapack/openblas"
 }
