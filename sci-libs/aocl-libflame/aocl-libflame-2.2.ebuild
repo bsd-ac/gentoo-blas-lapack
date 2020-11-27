@@ -4,8 +4,8 @@
 EAPI=7
 
 PROVIDER_NAME="aocl-libflame"
-PROVIDER_LIBS="lapack"
-inherit chainload-provider fortran-2 toolchain-funcs
+PROVIDER_LIBS=( "lapack" )
+inherit library-provider chainload-provider fortran-2 toolchain-funcs
 FORTRAN_NEED_OPENMP=1
 
 DESCRIPTION="AMD optimized high-performance object-based library for DLA computations"
@@ -25,13 +25,9 @@ SLOT="0"
 
 CPU_FLAGS=( sse3 )
 IUSE_CPU_FLAGS_X86="${CPU_FLAGS[@]/#/cpu_flags_x86_}"
-IUSE="scc supermatrix static-libs test ${IUSE_CPU_FLAGS_X86[@]}"
+IUSE="scc supermatrix test ${IUSE_CPU_FLAGS_X86[@]}"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	virtual/blas
-	virtual/cblas
-"
 RDEPEND="
 	!sci-libs/libflame
 "
@@ -63,7 +59,7 @@ src_configure() {
 		--enable-max-arg-list-hack
 		--enable-dynamic-build
 		--enable-vector-intrinsics=$(usex cpu_flags_x86_sse3 sse none)
-		$(use_enable static-libs static-build)
+		--disable-static-build
 		$(use_enable scc)
 		$(use_enable supermatrix)
 	)
