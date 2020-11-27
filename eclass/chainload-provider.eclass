@@ -29,9 +29,8 @@ inherit flag-o-matic toolchain-funcs
 # @DEFAULT_UNSET
 # @REQUIRED
 # @DESCRIPTION:
-# Name of library provider to be used all
-# library registrations
-[[ -z "${PROVIDER_NAME}" ]] && die "PROVIDER_NAME needs to be defined and non empty"
+# Name of the provider to be used all library registrations
+[[ -z ${PROVIDER_NAME+unset} ]] && die "PROVIDER_NAME needs to be defined and non empty"
 
 # @FUNCTION: provider-link-lib
 # @USAGE: <libname> <prepended_ldflags>
@@ -40,13 +39,13 @@ inherit flag-o-matic toolchain-funcs
 # Creates a ${libname} in the ${T} folder.
 # EXAMPLE:
 # @CODE
-# provider-link-lib "libcblas.so.3" "-Llib/generic -lblis-mt"
+# provider-link-lib libcblas.so.3 -Llib/generic -lblis-mt
 # @CODE
 provider-link-lib() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	if [[ $# -ne 2 ]]; then
-		die -q "need <libname> <prepended_ldflags>"
+	if [[ $# -lt 2 ]]; then
+		die -q "need <libname> <prepended_ldflags"
 	fi
 	local libname=$1 lname
 	shift 1

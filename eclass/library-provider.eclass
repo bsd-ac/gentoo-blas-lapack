@@ -28,23 +28,29 @@ EXPORT_FUNCTIONS pkg_postinst pkg_postrm
 # @DEFAULT_UNSET
 # @REQUIRED
 # @DESCRIPTION:
-# Name of library provider to be used all
-# library registrations
-[[ -z "${PROVIDER_NAME}" ]] && die "PROVIDER_NAME needs to be defined and non empty"
+# Name of the provider to be used all library registrations
+[[ -z ${PROVIDER_NAME+unset} ]] && die "PROVIDER_NAME needs to be defined and non empty"
 
 # @ECLASS-VARIABLE: PROVIDER_LIBS
 # @DEFAULT_UNSET
+# @REQUIRED
 # @DESCRIPTION:
-# Set this variable if the package
-# is a provider for BLAS and CBLAS
-[[ -z "${PROVIDER_LIBS}" ]] && die "PROVIDER_LIBS needs to be defined and non empty"
+# libraries provided by this package with eselect-library
+# Should be a bash array
+[[ -z ${PROVIDER_LIBS+unset} ]] && die "PROVIDER_LIBS needs to be defined and non empty"
+[[ $(declare -p PROVIDER_LIBS 2>/dev/null) == "declare -a"* ]] || \
+	die "PROVIDER_LIBS needs to be a bash array"
 
 # @ECLASS-VARIABLE: PROVIDER_DIRS
 # @DEFAULT_UNSET
 # @DESCRIPTION:
-# dirs in which libraries are registered
+# Directoriess in which libraries are registered
 # PROVIDER_LIBS[i] should be present in PROVIDER_DIRS[i]
 # PROVIDER_DIRS[i] defaults to ${EROOT}/usr/$(get_libdir)/${LIBNAME}/${PROVIDER_NAME}
+# Should either be unset or a bash array
+[[ -z ${PROVIDER_DIRS+unset} ]] || 
+	[[ $(declare -p PROVIDER_DIRS 2>/dev/null) == "declare -a"* ]] || \
+	die "PROVIDER_DIRS needs to be a bash array"
 
 library-provider_pkg_postinst() {
 	local libdir=$(get_libdir)
@@ -52,7 +58,7 @@ library-provider_pkg_postinst() {
 	local icnt=0
 	for plib in ${PROVIDER_LIBS[@]}; do
 		if [[ $icnt -lt ${#PROVIDER_DIRS[@]} ]]; then
-			pdir="${EROOT}%/}${PROVIDER_DIRS[$icnt]}"
+			pdir="${EROOT%/}${PROVIDER_DIRS[$icnt]}"
 		else
 			pdir="${EROOT%/}/usr/${libdir}/${plib}/${PROVIDER_NAME}"
 		fi
