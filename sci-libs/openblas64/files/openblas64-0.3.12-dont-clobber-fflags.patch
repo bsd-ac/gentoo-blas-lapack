@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index a9af62a..ec5c82a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -39,7 +39,7 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cp
+ .PHONY : all libs netlib $(RELA) test ctest shared install
+ .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
+ 
+-all :: libs netlib $(RELA) tests shared
++all :: libs netlib $(RELA) shared
+ 	@echo
+ 	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
+ 	@echo
+@@ -263,7 +263,7 @@ prof_lapack : lapack_prebuild
+ lapack_prebuild :
+ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+-	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
++	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc

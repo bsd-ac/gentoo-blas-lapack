@@ -3,30 +3,25 @@
 
 EAPI=7
 
-PROVIDER_NAME=openblas
-PROVIDER_LIBS="blas lapack"
-PROVIDER_BLAS=1
-PROVIDER_LAPACK=1
-PROVIDER_LAPACKE=1
-inherit chainload-provider flag-o-matic fortran-2 toolchain-funcs
+PROVIDER_NAME=openblas64
+PROVIDER_LIBS=( blas64 lapack64 )
+inherit library-provider chainload-provider flag-o-matic fortran-2 toolchain-funcs
 
 DESCRIPTION="Optimized BLAS library based on GotoBLAS2"
 HOMEPAGE="http://xianyi.github.com/OpenBLAS/"
-COMMIT=fab952bee4ba65dd9950aef739dda1813facfe76
+COMMIT=3788b6d156eaf3d26fa1748393739a8d1214d6c5
 SRC_URI="https://github.com/xianyi/OpenBLAS/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 S="${WORKDIR}"/OpenBLAS-${COMMIT}
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
-IUSE="dynamic openmp pthread relapack static-libs test"
+KEYWORDS="~amd64 ~arm ~arm64 ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+IUSE="dynamic openmp pthread +relapack test"
 REQUIRED_USE="?? ( openmp pthread )"
 RESTRICT="!test? ( test )"
 
-BDEPEND="virtual/pkgconfig"
-
 PATCHES=(
-	"${FILESDIR}/${PN}-0.3.12-soname.patch"
+	"${FILESDIR}/${PN}-0.3.12-dont-clobber-fflags.patch"
 )
 
 pkg_pretend() {
@@ -43,6 +38,12 @@ pkg_pretend() {
 	elog "using OPENBLAS_NTHREAD, default=64 and number of "
 	elog "parallel calls to allow before further calls wait"
 	elog "using OPENBLAS_NPARALLEL, default=8."
+}
+
+src_prepare() {
+	default
+	# disable tests by default
+	sed -e "/^all ::/s/tests//" -i Makefile || die
 }
 
 src_configure() {
@@ -80,7 +81,6 @@ src_configure() {
 	# generally detected automatically from cross toolchain
 	use dynamic && \
 		export DYNAMIC_ARCH=1 \
-		       TARGET=GENERIC \
 		       NO_AFFINITY=1 \
 		       TARGET=GENERIC
 
@@ -94,32 +94,24 @@ src_configure() {
 		export TARGET="${OPENBLAS_TARGET}"
 	fi
 
-	if ! use static-libs; then
-		export NO_STATIC=1
-	else
-		export NO_STATIC=0
-	fi
+	export NO_STATIC=1
 
 	BUILD_RELAPACK=1
 	if ! use relapack; then
 		BUILD_RELAPACK=0
 	fi
-	export BUILD_RELAPACK
 
-	export PREFIX="${EPREFIX}/usr" LIBSONAMEBASE=openblas64
-}
-
-src_prepare() {
-	default
+	export PREFIX="${EPREFIX}/usr" BUILD_RELAPACK
+	export LIBSONAMEBASE=openblas64 INTERFACE64=1
 }
 
 src_compile() {
 	default
 
-	provider-link-lib "libblas.so.3" "-L. -lopenblas"
-	provider-link-lib "libcblas.so.3" "-L. -lopenblas"
-	provider-link-lib "liblapack.so.3" "-L. -lopenblas"
-	provider-link-lib "liblapacke.so.3" "-L. -lopenblas"
+	provider-link-lib libblas64.so.3 -L. -lopenblas64
+	provider-link-lib libcblas64.so.3 -L. -lopenblas64
+	provider-link-lib liblapack64.so.3 -L. -lopenblas64
+	provider-link-lib liblapacke64.so.3 -L. -lopenblas64
 }
 
 src_test() {
@@ -133,8 +125,8 @@ src_install() {
 
 	dodoc GotoBLAS_*.txt *.md Changelog.txt
 
-	provider-install-lib "libblas.so.3"
-	provider-install-lib "libcblas.so.3" "/usr/$(get_libdir)/blas/openblas"
-	provider-install-lib "liblapack.so.3"
-	provider-install-lib "liblapacke.so.3" "/usr/$(get_libdir)/lapack/openblas"
+	provider-install-lib libblas64.so.3
+	provider-install-lib libcblas64.so.3 "/usr/$(get_libdir)/blas64/openblas64"
+	provider-install-lib liblapack64.so.3
+	provider-install-lib liblapacke64.so.3 "/usr/$(get_libdir)/lapack64/openblas64"
 }
