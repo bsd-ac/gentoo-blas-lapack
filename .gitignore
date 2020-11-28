@@ -1,5 +1,5 @@
 DEBUG/blas
 DEBUG/cblas
-DEBUG_dlopen/blas_dlopen
+DEBUG_dlopen/cblas_dlopen
 
 metadata/md5-cache

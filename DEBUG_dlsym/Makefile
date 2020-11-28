@@ -1,10 +1,10 @@
 .PHONY: all run clean
 
 all:
-	$(CXX) -o blas_dlopen blas_dlopen.c -ldl -fpermissive
+	$(CXX) -o cblas_dlopen cblas_dlopen.cpp -ldl -fpermissive
 
 run:
-	$$(time ./blas_dlopen)
+	$$(time ./cblas_dlopen)
 
 clean:
-	rm -f blas_dlopen
+	rm -f cblas_dlopen
