@@ -1,20 +1,22 @@
 # -*-eselect-*-  vim: ft=eselect
+# Copyright 2020 Gentoo Authors
+# Distributed under the terms of the GNU GPL version 2 or later
 
-inherit config tests multilib skel
+inherit config multilib package-manager skel tests
 
 MODULE="LIBRARY"
 IFACE="library"
 DESCRIPTION="Manage installed alternatives of libraries"
 MAINTAINER="gentoo@aisha.cc"
-VERSION="20201021"
+VERSION="20201129"
 
 ### helper utility to find all available library implementations
 find_targets_in() {
 	[[ $# -eq 2 ]] || die -q "need <libname> <libdir>"
 	local cand
 	for cand in ${EROOT}/etc/env.d/eselect-library/$1/$2/*; do
-		[[ "config" = $(basename ${cand}) ]] && continue
-		[[ -r ${cand} ]] && basename ${cand}
+		[[ "${cand}" == */config ]] && continue
+		[[ -r "${cand}" ]] && basename "${cand}"
 	done
 }
 
@@ -58,7 +60,7 @@ describe_show_options() {
 }
 
 do_show() {
-	[[ $# -eq 0 ]] && die -q "need <libname> [libdir1] [libdir2] ..." 
+	[[ $# -eq 0 ]] && die -q "need <libname> [libdir1] [libdir2] ..."
 	# do_show libname -- show both lib64 and lib32 selection
 	# do_show libname libxx -- show libxx selection
 	local libname=${1}
@@ -94,7 +96,7 @@ describe_list_options() {
 }
 
 do_list() {
-	[[ $# -eq 0 ]] && die -q "need <libname> [libdir1] [libdir2] ..." 
+	[[ $# -eq 0 ]] && die -q "need <libname> [libdir1] [libdir2] ..."
 	local libname=${1}
 	shift 1
 	local i cur targets
@@ -304,7 +306,7 @@ do_unset() {
 	store_config ${EROOT}/etc/env.d/eselect-library/${libname}/${libdir}/config CURRENT ""
 	# refresh cache. env-update will call ldconfig (see
 	# portage::env_update.py) so we don't need to call it explicitly.
-	env-update
+	env_update
 }
 
 ### add action
