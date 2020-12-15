@@ -3,7 +3,7 @@
 # Gentoo Science Project <sci@gentoo.org>
 # @AUTHOR:
 # Aisha Tammy <gentoo@aisha.cc>
-# @SUPPORTED_EAPIS: 7,8
+# @SUPPORTED_EAPIS: 7
 # @BLURB: library chainloading utilities, for dummy libraries
 # @DESCRIPTION:
 # Helper functions for creating dummy libraries which link
@@ -16,7 +16,7 @@ case "${EAPI:-0}" in
 	0|1|2|3|4|5|6)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	7|8)
+	7)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"

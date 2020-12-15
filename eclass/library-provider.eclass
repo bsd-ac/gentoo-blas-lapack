@@ -3,7 +3,7 @@
 # Gentoo Science Project <sci@gentoo.org>
 # @AUTHOR:
 # Aisha Tammy <gentoo@aisha.cc>
-# @SUPPORTED_EAPIS: 7,8
+# @SUPPORTED_EAPIS: 7
 # @BLURB: pkg_postinst/rm functions for eselect library
 # @DESCRIPTION:
 # default implementations of pkg_postinst/rm
@@ -13,7 +13,7 @@ case "${EAPI:-0}" in
 	0|1|2|3|4|5|6)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	7|8)
+	7)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
@@ -36,9 +36,9 @@ EXPORT_FUNCTIONS pkg_postinst pkg_postrm
 # @REQUIRED
 # @DESCRIPTION:
 # libraries provided by this package with eselect-library
-# Should be a bash array
-[[ -z ${PROVIDER_LIBS+unset} ]] && die "PROVIDER_LIBS needs to be defined and non empty"
-[[ $(declare -p PROVIDER_LIBS 2>/dev/null) == "declare -a"* ]] || \
+# Should either be unset or a bash array
+[[ -z ${PROVIDER_LIBS+unset} ]] || 
+	[[ $(declare -p PROVIDER_LIBS 2>/dev/null) == "declare -a"* ]] || \
 	die "PROVIDER_LIBS needs to be a bash array"
 
 # @ECLASS-VARIABLE: PROVIDER_DIRS
